@@ -1,0 +1,47 @@
+//
+//  PrefixHeader.pch
+//  FlowersAndGifts
+//
+//  Created by 网络中心 on 16/10/17.
+//  Copyright © 2016年 网络中心. All rights reserved.
+//
+
+#ifndef PrefixHeader_pch
+#define PrefixHeader_pch
+
+#import <AFNetworking.h>
+#import <Masonry.h>
+#import "JSONKit.h"
+#import "UIImageView+WebCache.h"
+#import "UIButton+WebCache.h"
+
+#define ScreenHeight [UIScreen mainScreen].bounds.size.height
+#define Screenwidth    [UIScreen mainScreen].bounds.size.width
+
+
+// color
+///< format：0xFFFFFF
+#define k16RGBColor(rgbValue) \
+[UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16)) / 255.0 \
+green:((float)((rgbValue & 0xFF00) >> 8)) / 255.0 \
+blue:((float)(rgbValue & 0xFF)) / 255.0 alpha:1.0]
+///< format：22,22,22
+#define kRGBColor(r, g, b) ([UIColor colorWithRed:(r) / 255.0  \
+green:(g) / 255.0  \
+blue:(b) / 255.0  \
+alpha:1])
+///< format：22,22,22,0.5
+#define kRGBAColor(r, g, b, a) ([UIColor colorWithRed:(r) / 255.0  \
+green:(g) / 255.0  \
+blue:(b) / 255.0  \
+alpha:(a)])
+#define kColorWith16RGB(rgb) k16RGBColor(rgb)
+#define kColorWithRGB(r,g,b) kRGBColor(r,g,b)
+#define kColorWithRGBA(r,g,b,a) kRGBAColor(r, g, b, a)
+
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+
+#define IndexUrl @"http://appok.hua.com/api/index?app_version=3.1&client_id=7902535a635c91c1da14ca7b6bb24b11&device_model=iPhone%206&device_token=80b6d1b2374312e2af587cbad7743d0143c8cb995dfb8a2136db3c9736033fdd&screen_size=750.0x1334.0&sid=app_pg&system_version=10.0&username=13552109217%40vip.hua.com%7C2e2767fb2ca968f5"
+
+#endif /* PrefixHeader_pch */
