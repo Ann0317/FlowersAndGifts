@@ -1,15 +1,14 @@
 //
-//  WXDHotsView.m
+//  WXDOrderView.m
 //  FlowersAndGifts
 //
-//  Created by 网络中心 on 16/10/24.
+//  Created by 网络中心 on 16/11/3.
 //  Copyright © 2016年 网络中心. All rights reserved.
 //
 
-#import "WXDHotsView.h"
+#import "WXDOrderView.h"
 #import "WXDIndexModel.h"
-
-@implementation WXDHotsView
+@implementation WXDOrderView
 
 /*
 // Only override drawRect: if you perform custom drawing.
@@ -19,42 +18,8 @@
 }
 */
 
-- (void)createHotsView {
+- (void)createOrderViews {
     
-    self.groupNameLabel = [[UILabel alloc] init];
-    self.groupNameLabel.text = self.groupName;
-    self.groupNameLabel.font = [UIFont systemFontOfSize:14];
-    self.groupNameLabel.textAlignment = NSTextAlignmentLeft;
-    [self addSubview:self.groupNameLabel];
-    [self.groupNameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.mas_top).offset(0);
-        make.left.equalTo(self.mas_left).offset(10);
-        make.width.mas_equalTo(100);
-        make.height.mas_equalTo(30);
-    }];
-    
-    self.moreBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    
-    [self.moreBtn setTitleColor:kColorWithRGB(170, 169, 174) forState:UIControlStateNormal];
-    [self.moreBtn setTitle:@"更多" forState:UIControlStateNormal];
-    [self.moreBtn addTarget:self action:@selector(moreBtnClicked) forControlEvents:UIControlEventTouchUpInside];
-    self.moreBtn.titleLabel.textAlignment = NSTextAlignmentRight;
-    self.moreBtn.titleLabel.font = [UIFont systemFontOfSize:12];
-    
-    [self addSubview:self.moreBtn];
-    
-    [self.moreBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.mas_top).offset(0);
-        make.right.equalTo(self.mas_right).offset(-10);
-        make.width.mas_equalTo(40);
-        make.height.mas_equalTo(30);
-    }];
-    
-    
-    CGFloat width = (Screenwidth -self.space * (self.count + 1))/self.count;
-    CGFloat height = 4 * width / 3;
-    
-
     for (int i = 0; i < self.dataArray.count; i++) {
         WXDIndexModel *model = self.dataArray[i];
         
@@ -66,21 +31,16 @@
         [self addSubview:view];
         
         [view mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.width.mas_equalTo(width);
-            make.height.mas_equalTo(height);
-            make.left.equalTo(self.mas_left).offset(self.space + colNum * (self.space + width));
-            make.top.equalTo(self.groupNameLabel.mas_bottom).offset( rowNum * (self.space + height));
+            make.width.mas_equalTo(self.width);
+            make.height.mas_equalTo(self.height);
+            make.left.equalTo(self.mas_left).offset(self.space + colNum * (self.space + self.width));
+            make.top.equalTo(self.mas_top).offset( rowNum * (self.space + self.height));
             
         }];
-        [self createHotsViewDetailwithSuperView:view withViewSize:CGSizeMake(width, height) withModel:model];
+        [self createHotsViewDetailwithSuperView:view withViewSize:CGSizeMake(self.width, self.height) withModel:model];
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapClicked:)];
         [view addGestureRecognizer:tap];
     }
-}
-
-
-- (void)moreBtnClicked {
-    
 }
 
 - (void)tapClicked:(UIResponder *)responder {
@@ -126,5 +86,6 @@
     }];
     
 }
+
 
 @end

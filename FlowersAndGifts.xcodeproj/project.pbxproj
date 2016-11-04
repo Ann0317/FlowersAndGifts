@@ -20,6 +20,8 @@
 		62CC17CF1DBE03BF00634EE2 /* WXDIndexModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 62CC17CE1DBE03BF00634EE2 /* WXDIndexModel.m */; };
 		62CC17D31DBE079200634EE2 /* WXDHotsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 62CC17D21DBE079200634EE2 /* WXDHotsView.m */; };
 		62FD31C31DC1DD4400901011 /* WXDPromptPullOrDownView.m in Sources */ = {isa = PBXBuildFile; fileRef = 62FD31C21DC1DD4400901011 /* WXDPromptPullOrDownView.m */; };
+		62FFE6DD1DCB1C2B00880EC9 /* UIScrollView+ScrollBottom.m in Sources */ = {isa = PBXBuildFile; fileRef = 62FFE6DC1DCB1C2B00880EC9 /* UIScrollView+ScrollBottom.m */; };
+		62FFE6E01DCB258D00880EC9 /* WXDOrderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 62FFE6DF1DCB258D00880EC9 /* WXDOrderView.m */; };
 		A94B1C26E24716155A48A49E /* libPods-FlowersAndGifts.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 05C7953D2AD6F3B736374962 /* libPods-FlowersAndGifts.a */; };
 /* End PBXBuildFile section */
 
@@ -71,6 +73,10 @@
 		62FC1B861DB7716500225B93 /* JSONKit.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = JSONKit.m; path = Pods/JSONKit/JSONKit.m; sourceTree = "<group>"; };
 		62FD31C11DC1DD4400901011 /* WXDPromptPullOrDownView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WXDPromptPullOrDownView.h; sourceTree = "<group>"; };
 		62FD31C21DC1DD4400901011 /* WXDPromptPullOrDownView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WXDPromptPullOrDownView.m; sourceTree = "<group>"; };
+		62FFE6DB1DCB1C2B00880EC9 /* UIScrollView+ScrollBottom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+ScrollBottom.h"; sourceTree = "<group>"; };
+		62FFE6DC1DCB1C2B00880EC9 /* UIScrollView+ScrollBottom.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+ScrollBottom.m"; sourceTree = "<group>"; };
+		62FFE6DE1DCB258D00880EC9 /* WXDOrderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WXDOrderView.h; sourceTree = "<group>"; };
+		62FFE6DF1DCB258D00880EC9 /* WXDOrderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WXDOrderView.m; sourceTree = "<group>"; };
 		ECDB7463AB2BE9863B096F9E /* Pods-FlowersAndGifts.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FlowersAndGifts.release.xcconfig"; path = "Pods/Target Support Files/Pods-FlowersAndGifts/Pods-FlowersAndGifts.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -127,6 +133,7 @@
 		620F07511DB0E34C0053C6C3 /* FlowersAndGifts */ = {
 			isa = PBXGroup;
 			children = (
+				62FFE6DA1DCB1C0500880EC9 /* categary */,
 				62CC17C51DBE028000634EE2 /* WXDIndexPageVC */,
 				620F07551DB0E34C0053C6C3 /* AppDelegate.h */,
 				620F07561DB0E34C0053C6C3 /* AppDelegate.m */,
@@ -209,6 +216,8 @@
 				6251ED7A1DBF36F600D72A59 /* myBirthCakesView */,
 				62CC17D01DBE075A00634EE2 /* myHots */,
 				62CC17C91DBE02E000634EE2 /* myClasses */,
+				62FFE6DE1DCB258D00880EC9 /* WXDOrderView.h */,
+				62FFE6DF1DCB258D00880EC9 /* WXDOrderView.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -238,6 +247,15 @@
 				62FD31C21DC1DD4400901011 /* WXDPromptPullOrDownView.m */,
 			);
 			name = prompt;
+			sourceTree = "<group>";
+		};
+		62FFE6DA1DCB1C0500880EC9 /* categary */ = {
+			isa = PBXGroup;
+			children = (
+				62FFE6DB1DCB1C2B00880EC9 /* UIScrollView+ScrollBottom.h */,
+				62FFE6DC1DCB1C2B00880EC9 /* UIScrollView+ScrollBottom.m */,
+			);
+			name = categary;
 			sourceTree = "<group>";
 		};
 		9E08CC35F9808631E9FA2F16 /* Frameworks */ = {
@@ -446,10 +464,12 @@
 			files = (
 				620F075A1DB0E34C0053C6C3 /* ViewController.m in Sources */,
 				62CC17CC1DBE02E000634EE2 /* WXDImageAndTextView.m in Sources */,
+				62FFE6DD1DCB1C2B00880EC9 /* UIScrollView+ScrollBottom.m in Sources */,
 				62FD31C31DC1DD4400901011 /* WXDPromptPullOrDownView.m in Sources */,
 				62CC17D31DBE079200634EE2 /* WXDHotsView.m in Sources */,
 				620F07571DB0E34C0053C6C3 /* AppDelegate.m in Sources */,
 				6251ED791DBF36EA00D72A59 /* WXDBirthCakesView.m in Sources */,
+				62FFE6E01DCB258D00880EC9 /* WXDOrderView.m in Sources */,
 				620F07541DB0E34C0053C6C3 /* main.m in Sources */,
 				62CC17CF1DBE03BF00634EE2 /* WXDIndexModel.m in Sources */,
 			);

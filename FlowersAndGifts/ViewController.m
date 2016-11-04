@@ -14,6 +14,10 @@
 #import "WXDHotsView.h"
 #import "WXDBirthCakesView.h"
 #import "WXDPromptPullOrDownView.h"
+#import "UIScrollView+ScrollBottom.h"
+#import "WXDOrderView.h"
+
+//#define WS(weakSelf)  __weak __typeof(&*self) weakSelf = self;
 
 @interface ViewController ()<UITextFieldDelegate,UIScrollViewDelegate>
 @property (nonatomic,strong)UIScrollView *bottomScroll;//位于最底的滑动视图
@@ -27,6 +31,8 @@
 @property (nonatomic,strong)UIButton *contactView;//联系我们视图
 @property (nonatomic,strong)WXDPromptPullOrDownView *topPromptView;//上边提示上拉的小视图
 @property (nonatomic,strong)WXDPromptPullOrDownView *bottomPromptView;//下边提示上拉的小视图
+@property (nonatomic,strong)UIScrollView *recommendScroll;//推荐的滑动视图
+@property (nonatomic,strong)WXDOrderView *recommendView;//推荐视图
 
 
 @property (nonatomic,strong)NSDictionary *dataDict;//存放数据的字典
@@ -38,7 +44,9 @@
 @property (nonatomic,strong)NSMutableArray *giftsArray;//特色礼品数组
 @property (nonatomic,strong)NSMutableArray *aboutArray;//关于的数组
 @property (nonatomic,strong)NSMutableArray *contactArray;//联系我们数组
+@property (nonatomic,strong)NSMutableArray *recommendarray;//推荐的数组
 
+@property (nonatomic,assign)CGFloat pullHeight;
 
 @end
 
@@ -69,6 +77,7 @@
     self.giftsArray = [NSMutableArray array];
     self.aboutArray = [NSMutableArray array];
     self.contactArray = [NSMutableArray array];
+    self.recommendarray = [NSMutableArray array];
 }
 
 - (void)downLoadData {
@@ -151,8 +160,20 @@
             model.name = contactDict[@"name"];
             [self.contactArray addObject:model];
         
-        
         [self createContactView];
+        
+        
+        for (NSDictionary *recommendDict in self.dataDict[@"recommend"]) {
+            WXDIndexModel *model = [[WXDIndexModel alloc] init];
+            model.image = recommendDict[@"image"];
+            model.name = recommendDict[@"name"];
+            model.price = recommendDict[@"price"];
+            model.cid = recommendDict[@"id"];
+            [self.recommendarray addObject:model];
+        }
+        
+        [self createRecommendView];
+        
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         //请求失败
@@ -219,16 +240,47 @@
     //创建导航栏
     [self createGuidView];
     
+    //WS(weakSelf)
     //创建最低部的滑动视图
     self.bottomScroll = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 64, Screenwidth, ScreenHeight - 64)];
+    
     self.bottomScroll.showsVerticalScrollIndicator = NO;
     self.bottomScroll.showsHorizontalScrollIndicator = NO;
     self.bottomScroll.scrollEnabled = YES;
     self.bottomScroll.userInteractionEnabled = YES;
     self.bottomScroll.backgroundColor = kColorWithRGB(238, 237, 243);
-    self.bottomScroll.contentSize = CGSizeMake(Screenwidth, ScreenHeight + 2000);
     [self.view addSubview:self.bottomScroll];
     self.bottomScroll.delegate = self;
+    
+    self.recommendScroll = [[UIScrollView alloc] initWithFrame:CGRectMake(0, ScreenHeight, Screenwidth, ScreenHeight - 64)];
+    self.recommendScroll.showsVerticalScrollIndicator = NO;
+    self.recommendScroll.showsHorizontalScrollIndicator = NO;
+    self.recommendScroll.scrollEnabled = YES;
+    self.recommendScroll.userInteractionEnabled = YES;
+    self.recommendScroll.backgroundColor = kColorWithRGB(238, 237, 243);
+    self.recommendScroll.contentSize = CGSizeMake(Screenwidth, 2000);
+    [self.view addSubview:self.recommendScroll];
+    self.recommendScroll.delegate = self;
+    
+    [self.bottomPromptView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.recommendScroll.mas_top).offset(10);
+        make.left.right.equalTo(self.view);
+        make.height.mas_offset(40);
+    }];
+}
+
+- (WXDPromptPullOrDownView *)bottomPromptView {
+    if (!_bottomPromptView) {
+        _bottomPromptView = [[WXDPromptPullOrDownView alloc] init];
+        [self.recommendScroll addSubview:_bottomPromptView];
+    }
+    
+    _bottomPromptView.image = [UIImage imageNamed:@"pull"];
+    _bottomPromptView.title = @"下拉返回";
+    _bottomPromptView.imageHeight = 15;
+    [_bottomPromptView createSubViews];
+    
+    return _bottomPromptView;
 }
 
 //创建轮播图
@@ -342,9 +394,7 @@
         make.left.right.equalTo(self.view);
         make.height.mas_equalTo(5 + 5 + 30 + (self.hotsView.space + height) * (self.hotsArr.count / 2));
     }];
-    
     [self.hotsView createHotsView];
-    
 }
 //创建生日蛋糕系列的view
 - (void)createBirthsView {
@@ -471,7 +521,36 @@
 }
 
 - (void)contactBtnClicked {
-    NSLog(@"合。。。。。。。分");
+    
+}
+//创建recommendView
+- (void)createRecommendView {
+    
+    self.recommendView = [[WXDOrderView alloc] init];
+    [self.recommendScroll addSubview:self.recommendView];
+    
+    self.recommendView.count = 2;//横排的个数
+    self.recommendView.space = 10;//间距
+    self.recommendView.dataArray = self.recommendarray;
+    
+    CGFloat width = (Screenwidth - self.recommendView.space * 3)/self.recommendView.count;
+    CGFloat height = 4 * width / 3;
+    self.recommendView.width = width;
+    self.recommendView.height = height;
+    
+    [self.recommendView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.bottomPromptView.mas_bottom);
+        make.left.right.equalTo(self.view);
+        make.height.mas_equalTo(5 + 5 + (self.recommendView.space + height) * (self.recommendarray.count / 2));
+    }];
+    [self.recommendView createOrderViews];
+    
+    [self.recommendScroll mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.equalTo(self.view).insets(UIEdgeInsetsMake(ScreenHeight, 0, 0, 0));
+        // 让scrollview的contentSize随着内容的增多而变化
+        make.bottom.mas_equalTo(self.recommendView.mas_bottom);
+    }];
+    NSLog(@"/////////%f",self.recommendScroll.contentSize.height);
 }
 
 - (WXDPromptPullOrDownView *)topPromptView {
@@ -488,9 +567,65 @@
     return _topPromptView;
 }
 
+
+
 #pragma mark -- ScrollView Delegate --
+
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-    NSLog(@"%f",scrollView.contentOffset.y);
+    
+    if (self.bottomScroll.contentOffset.y - self.pullHeight >= 64) {
+        // 告诉self.view约束需要更新
+        [self.view setNeedsUpdateConstraints];
+        // 调用此方法告诉self.view检测是否需要更新约束，若需要则更新，下面添加动画效果才起作用
+        [self.view updateConstraintsIfNeeded];
+        
+        [UIView animateWithDuration:0.5 animations:^{
+            [self.bottomScroll mas_updateConstraints:^(MASConstraintMaker *make) {
+                make.bottom.equalTo(self.view.mas_top).offset(64);
+            }];
+
+            [self.recommendScroll mas_updateConstraints:^(MASConstraintMaker *make) {
+                make.top.equalTo(self.view.mas_top).offset(64);
+            }];
+            
+        } completion:^(BOOL finished) {
+            
+        }];
+    }
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    
+    [self.bottomScroll scrollviewScrollBottom:^{
+        NSLog(@"小丹丹，我滑动到最低端了！");
+        self.pullHeight = self.bottomScroll.contentOffset.y;
+        //NSLog(@"%f",scrollView.contentOffset.y);
+    }];
+    
+    if (self.recommendScroll.contentOffset.y <= 0) {
+        
+        NSLog(@"ddddddddddd%f",self.recommendScroll.contentOffset.y);
+        NSLog(@"??????????????????????????????????????????????????????????");
+        // 告诉self.view约束需要更新
+        [self.view setNeedsUpdateConstraints];
+        // 调用此方法告诉self.view检测是否需要更新约束，若需要则更新，下面添加动画效果才起作用
+        [self.view updateConstraintsIfNeeded];
+        
+        [UIView animateWithDuration:0.5 animations:^{
+            self.bottomScroll.frame = CGRectMake(0, 64, Screenwidth, ScreenHeight - 64);
+            self.recommendScroll.frame = CGRectMake(0, ScreenHeight, Screenwidth, ScreenHeight - 64);
+//            [self.bottomScroll mas_updateConstraints:^(MASConstraintMaker *make) {
+//                make.top.equalTo(self.view.mas_top).offset(64);
+//            }];
+//            
+//            [self.recommendScroll mas_updateConstraints:^(MASConstraintMaker *make) {
+//                make.top.equalTo(self.view.mas_bottom);
+//            }];
+        } completion:^(BOOL finished) {
+            
+        }];
+        
+    }
     
 }
 
