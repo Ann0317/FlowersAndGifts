@@ -30,7 +30,8 @@
 @property (nonatomic,strong)UIView *aboutView;//关于的视图
 @property (nonatomic,strong)UIButton *contactView;//联系我们视图
 @property (nonatomic,strong)WXDPromptPullOrDownView *topPromptView;//上边提示上拉的小视图
-@property (nonatomic,strong)WXDPromptPullOrDownView *bottomPromptView;//下边提示上拉的小视图
+@property (nonatomic,strong)WXDPromptPullOrDownView *bottomPromptView;//下边提示上拉小视图
+@property (nonatomic,strong)WXDPromptPullOrDownView *endPromptView;//提示已滑到低端的小视图
 @property (nonatomic,strong)UIScrollView *recommendScroll;//推荐的滑动视图
 @property (nonatomic,strong)WXDOrderView *recommendView;//推荐视图
 
@@ -267,6 +268,7 @@
         make.left.right.equalTo(self.view);
         make.height.mas_offset(40);
     }];
+    
 }
 
 - (WXDPromptPullOrDownView *)bottomPromptView {
@@ -281,6 +283,20 @@
     [_bottomPromptView createSubViews];
     
     return _bottomPromptView;
+}
+
+- (WXDPromptPullOrDownView *)endPromptView {
+    if (!_endPromptView) {
+        _endPromptView = [[WXDPromptPullOrDownView alloc] init];
+        [self.recommendScroll addSubview:_endPromptView];
+    }
+    
+//    _endPromptView.image = [UIImage imageNamed:@"pull"];
+    _endPromptView.title = @"到底了";
+    _endPromptView.imageHeight = 15;
+    [_endPromptView createSubViews];
+    
+    return _endPromptView;
 }
 
 //创建轮播图
@@ -545,10 +561,17 @@
     }];
     [self.recommendView createOrderViews];
     
+    [self.endPromptView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.recommendView.mas_bottom);
+        make.left.right.equalTo(self.view);
+        make.height.mas_offset(40);
+    }];
+
+    
     [self.recommendScroll mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.equalTo(self.view).insets(UIEdgeInsetsMake(ScreenHeight, 0, 0, 0));
         // 让scrollview的contentSize随着内容的增多而变化
-        make.bottom.mas_equalTo(self.recommendView.mas_bottom);
+        make.bottom.mas_equalTo(self.endPromptView.mas_bottom);
     }];
     NSLog(@"/////////%f",self.recommendScroll.contentSize.height);
 }
@@ -571,41 +594,39 @@
 
 #pragma mark -- ScrollView Delegate --
 
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-    
-    if (self.bottomScroll.contentOffset.y - self.pullHeight >= 64) {
-        // 告诉self.view约束需要更新
-        [self.view setNeedsUpdateConstraints];
-        // 调用此方法告诉self.view检测是否需要更新约束，若需要则更新，下面添加动画效果才起作用
-        [self.view updateConstraintsIfNeeded];
-        
-        [UIView animateWithDuration:0.5 animations:^{
-            [self.bottomScroll mas_updateConstraints:^(MASConstraintMaker *make) {
-                make.bottom.equalTo(self.view.mas_top).offset(64);
-            }];
-
-            [self.recommendScroll mas_updateConstraints:^(MASConstraintMaker *make) {
-                make.top.equalTo(self.view.mas_top).offset(64);
-            }];
+//- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+//    
+//}
+//完成拖拽
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+    if (self.pullHeight != 0) {
+        if (self.bottomScroll.contentOffset.y - self.pullHeight >= 64) {
+            // 告诉self.view约束需要更新
+            [self.view setNeedsUpdateConstraints];
+            // 调用此方法告诉self.view检测是否需要更新约束，若需要则更新，下面添加动画效果才起作用
+            [self.view updateConstraintsIfNeeded];
             
-        } completion:^(BOOL finished) {
-            
-        }];
+            [UIView animateWithDuration:0.5 animations:^{
+                
+                [self.bottomScroll mas_updateConstraints:^(MASConstraintMaker *make) {
+                    make.bottom.equalTo(self.view.mas_top).offset(64);
+                }];
+                
+                [self.recommendScroll mas_updateConstraints:^(MASConstraintMaker *make) {
+                    make.top.equalTo(self.view.mas_top).offset(64);
+                }];
+                
+            } completion:^(BOOL finished) {
+                
+            }];
+        }
     }
-}
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     
-    [self.bottomScroll scrollviewScrollBottom:^{
-        NSLog(@"小丹丹，我滑动到最低端了！");
-        self.pullHeight = self.bottomScroll.contentOffset.y;
-        //NSLog(@"%f",scrollView.contentOffset.y);
-    }];
     
-    if (self.recommendScroll.contentOffset.y <= 0) {
+    if (self.recommendScroll.contentOffset.y < 0) {
         
         NSLog(@"ddddddddddd%f",self.recommendScroll.contentOffset.y);
-        NSLog(@"??????????????????????????????????????????????????????????");
+        
         // 告诉self.view约束需要更新
         [self.view setNeedsUpdateConstraints];
         // 调用此方法告诉self.view检测是否需要更新约束，若需要则更新，下面添加动画效果才起作用
@@ -626,6 +647,18 @@
         }];
         
     }
+
+
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    
+    [self.bottomScroll scrollviewScrollBottom:^{
+        NSLog(@"小丹丹，我滑动到最低端了！");
+        self.pullHeight = self.bottomScroll.contentOffset.y;
+        //NSLog(@"%f",scrollView.contentOffset.y);
+    }];
+    
     
 }
 
